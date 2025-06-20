@@ -1,0 +1,27 @@
+stages:
+  - lint
+  - test
+  - deploy
+
+lint:
+  stage: lint
+  script:
+    - pip install black flake8
+    - black --check .
+    - flake8 .
+
+test:
+  stage: test
+  script:
+    - pip install -r requirements.txt
+    - pytest --ds=django_project.settings --junitxml=test-results.xml
+  artifacts:
+    paths:
+      - test-results.xml
+
+deploy:
+  stage: deploy
+  only:
+    - main
+  script:
+    - bash deploy.sh
